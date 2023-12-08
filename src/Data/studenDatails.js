@@ -1,0 +1,42 @@
+export const studentsData = [
+  {
+    id: 1,
+    name: "John Doe",
+    email: "johndoe@example.com",
+    address: "123 Main St",
+    gender: "male",
+    country: "India",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "janesmith@example.com",
+    address: "456 Elm St",
+    gender: "female",
+    country: "India",
+  },
+  {
+    id: 3,
+    name: "Bob Johnson",
+    email: "bobjohnson@example.com",
+    address: "789 Oak St",
+    gender: "male",
+    country: "India",
+  },
+  {
+    id: 4,
+    name: "Alice Williams",
+    email: "alicewilliams@example.com",
+    address: "321 Pine St",
+    gender: "female",
+    country: "India",
+  },
+  {
+    id: 5,
+    name: "Tom Davis",
+    email: "tomdavis@example.com",
+    address: "654 Cedar St",
+    gender: "male",
+    country: "India",
+  },
+];

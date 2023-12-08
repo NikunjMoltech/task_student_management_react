@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Navigationbar from "./Components/Navigationbar";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import FooterComponent from "./Components/FooterComponent";
+import { useState } from "react";
+import { dynamicRoutes } from "./Components/Routing";
 function App() {
+  const [login, setLogin] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="d-flex flex-column min-vh-100">
+        <Navigationbar />
+        <Routes>
+          {dynamicRoutes.map((route, idx) => {
+            return (
+              <Route
+                key={idx}
+                path={route.path}
+                element={<route.component login={login} setLogin={setLogin} />}
+              ></Route>
+            );
+          })}
+          {/* <Route path="/" element={<h1>Hello!!</h1>}></Route>
+          <Route
+            path="/login"
+            element={<Login login={login} setLogin={setLogin} />}
+          ></Route>
+          <Route
+            path="/signup"
+            element={<Signup login={login} setLogin={setLogin} />}
+          ></Route>
+          <Route path="/students" element={<Students />}></Route>
+          <Route path="/aboutus" element={<AboutUs />}></Route> */}
+        </Routes>
+        <FooterComponent />
+      </div>
+    </BrowserRouter>
   );
 }
 

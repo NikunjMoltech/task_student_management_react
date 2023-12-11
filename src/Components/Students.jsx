@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Modal } from "react-bootstrap";
-import { studentsData } from "../Data/studenDatails";
+// import { studentsData } from "../Data/studenDatails";
 import cloneDeep from "lodash/cloneDeep";
+import axios from "axios";
+import { APIVariables } from "../Data/APIEndPoints";
 const Students = ({ login }) => {
   const [showModal, setShowModal] = useState(false);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const [students, setStudent] = useState(studentsData);
+  const [students, setStudent] = useState([]);
 
   const handleShowModal = (student) => {
     setSelectedStudent(student);
@@ -15,15 +17,29 @@ const Students = ({ login }) => {
   };
 
   const handleSaveChange = () => {
-    const edited = cloneDeep(
-      students.map((obj) => {
-        return obj.id === selectedStudent.id
-          ? { ...obj, ...selectedStudent }
-          : obj;
-      })
-    );
+    // const edited = cloneDeep(
+    //   students.map((obj) => {
+    //     return obj.id === selectedStudent.id
+    //       ? { ...obj, ...selectedStudent }
+    //       : obj;
+    //   })
+    // );
 
-    setStudent(edited);
+    axios
+      .post(
+        APIVariables.API_URL + "Registration/updateStudent",
+        selectedStudent
+      )
+      .then((result) => {
+        if (result.status === 200) {
+          refreshList();
+          return window.alert("Update Done");
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      });
+
     handleCloseModal();
   };
 
@@ -47,6 +63,18 @@ const Students = ({ login }) => {
       {name}
     </option>
   ));
+
+  const refreshList = () => {
+    axios
+      .get(APIVariables.API_URL + "Registration/getStudents")
+      .then((data) => {
+        setStudent(data.data);
+      });
+  };
+
+  useEffect(() => {
+    refreshList();
+  }, []);
 
   return (
     <>

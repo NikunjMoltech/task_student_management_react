@@ -1,25 +1,64 @@
 import React, { useState } from "react";
 import { registerData } from "../Data/registerData";
+import { useFormik } from "formik";
+import { loginSchema } from "../Schemas";
+import axios from "axios";
+import { APIVariables } from "../Data/APIEndPoints";
 const Login = ({ login, setLogin }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const onSubmit = async (values, actions) => {
+    const info = values;
+    axios
+      .post(APIVariables.API_URL + "Registration/login", info)
+      .then((result) => {
+        if (result.status === 200) {
+          if (result.data === 1) {
+            actions.resetForm();
+            setLogin(true);
+            return window.alert("Login Successfull");
+          } else {
+            return window.alert("Email Password Incorrect");
+          }
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      });
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  };
+  const {
+    values,
+    actions,
+    errors,
+    touched,
+    isSubmitting,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginSchema,
+    onSubmit,
+  });
 
   function checkCredentials(email, password) {
     return registerData.some(
       (user) => user.email === email && user.password === password
     );
   }
-  const handleLogin = () => {
-    if (checkCredentials(email, password)) {
-      console.log("inside");
-      setLogin(true);
-      window.alert("Loged in Successfull");
-    } else {
-      setLogin(false);
-      window.alert("Email or password incorrect");
-    }
-  };
-
+  // const handleLogin = () => {
+  //   if (checkCredentials(email, password)) {
+  //     console.log("inside");
+  //     setLogin(true);
+  //     window.alert("Loged in Successfull");
+  //   } else {
+  //     setLogin(false);
+  //     window.alert("Email or password incorrect");
+  //   }
+  // };
   return (
     <>
       {!login ? (
@@ -31,7 +70,7 @@ const Login = ({ login, setLogin }) => {
                   <h2 className="text-center mb-4">Login Form</h2>
                   <form onSubmit={(e) => e.preventDefault(e)}>
                     <div className="mb-3">
-                      <label htmlhtmlhtmlFor="email" className="form-label">
+                      <label htmlFor="email" className="form-label">
                         Email:
                       </label>
                       <input
@@ -39,13 +78,17 @@ const Login = ({ login, setLogin }) => {
                         className="form-control"
                         id="email"
                         name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                       />
+                      {errors.email && touched.email && (
+                        <p className="error">{errors.email}</p>
+                      )}
                     </div>
 
                     <div className="mb-3">
-                      <label htmlhtmlFor="password" className="form-label">
+                      <label htmlFor="password" className="form-label">
                         Password:
                       </label>
                       <input
@@ -53,14 +96,18 @@ const Login = ({ login, setLogin }) => {
                         className="form-control"
                         id="password"
                         name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={values.password}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                       />
+                      {errors.password && touched.password && (
+                        <p className="error">{errors.password}</p>
+                      )}
                     </div>
                     <button
                       type="submit"
                       className="btn btn-primary w-100"
-                      onClick={() => handleLogin()}
+                      onClick={() => handleSubmit(values, actions)}
                     >
                       Submit
                     </button>
@@ -76,5 +123,4 @@ const Login = ({ login, setLogin }) => {
     </>
   );
 };
-
 export default Login;

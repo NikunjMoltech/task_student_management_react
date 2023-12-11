@@ -5,7 +5,7 @@ export const registerData = [
     password: "abc",
     address: "ABC",
     gender: "male",
-    hobbies: [{ reading: false, writing: false, swimming: true }],
+    hobbies: [],
     country: "India",
   },
 ];

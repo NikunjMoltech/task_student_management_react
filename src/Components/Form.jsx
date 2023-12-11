@@ -1,44 +1,36 @@
 import React from "react";
+import { basicSchema } from "../Schemas";
+import { useFormik } from "formik";
 
-// const onSubmit = async (values, actions) => {
-//   console.log(values);
-//   console.log(actions);
-//   await new Promise((resolve) => setTimeout(resolve, 1000));
-//   actions.resetForm();
-// };
+const Form = ({ handleCheckbox, students, Submit, hobbiesAvailable }) => {
+  const onSubmit = async (values, actions) => {
+    Submit(values);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    actions.resetForm();
+  };
 
-const Form = ({
-  students,
-  handleChange,
-  handleCheckbox,
-  handleSubmit,
-  hobbiesAvailable,
-}) => {
-  // const {
-  //   values,
-  //   errors,
-  //   touched,
-  //   isSubmitting,
-  //   handleBlur,
-  //   handleChange,
-  //   handleSubmit,
-  // } = useFormik({
-  //   initialValues: {
-  //     name: "",
-  //     email: "",
-  //     password: "",
-  //     address: "",
-  //     gender: "",
-  //     hobbies: [],
-  //     country: "",
-  //     //confirmPassword: "",
-  //   },
-  //   validationSchema: basicSchema,
-  //   onSubmit,
-  // });
+  const {
+    values,
+    actions,
+    errors,
+    touched,
+    isSubmitting,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      address: "",
+      password: "",
+      country: "",
+    },
+    validationSchema: basicSchema,
+    onSubmit,
+  });
 
   const countries = ["India", "UK", "USA", "Australia"];
-
   const countriesOption = countries.map((name, key) => (
     <option value={name} key={key}>
       {name}
@@ -54,59 +46,78 @@ const Form = ({
               <form onSubmit={(e) => e.preventDefault(e)}>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
-                    Name:
+                    Name:*
                   </label>
                   <input
+                    required
                     type="text"
                     className="form-control"
                     name="name"
-                    value={students.name}
-                    onChange={(e) => handleChange(e)}
+                    value={values.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  {errors.name && touched.name && (
+                    <p className="error">{errors.name}</p>
+                  )}
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email:
+                    Email:*
                   </label>
                   <input
+                    required
                     type="text"
                     className="form-control"
                     id="email"
                     name="email"
-                    value={students.email}
-                    onChange={(e) => handleChange(e)}
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  {errors.email && touched.email && (
+                    <p className="error">{errors.email}</p>
+                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    password:
+                    password:*
                   </label>
                   <input
+                    required
                     type="password"
                     className="form-control"
                     id="password"
                     name="password"
-                    value={students.password}
-                    onChange={(e) => handleChange(e)}
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  {errors.password && touched.password && (
+                    <p className="error">{errors.password}</p>
+                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="address" className="form-label">
-                    Address:
+                    Address:*
                   </label>
                   <textarea
                     className="form-control"
                     id="address"
                     name="address"
-                    value={students.address}
-                    onChange={(e) => handleChange(e)}
+                    value={values.address}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   ></textarea>
+                  {errors.address && touched.address && (
+                    <p className="error">{errors.address}</p>
+                  )}
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="gender" className="form-label">
-                    Gender:
+                    Gender:*
                   </label>
                   <br />
                   <div
@@ -116,21 +127,26 @@ const Form = ({
                     <input
                       type="radio"
                       value="male"
-                      checked={students.gender === "male"}
+                      checked={values.gender === "male"}
                       name="gender"
+                      onBlur={handleBlur}
                     />
                     Male
                     <input
                       type="radio"
                       value="female"
-                      checked={students.gender === "female"}
+                      checked={values.gender === "female"}
                       name="gender"
+                      onBlur={handleBlur}
                     />
                     Female
                   </div>
+                  {errors.gender && touched.gender && (
+                    <p className="error">{errors.gender}</p>
+                  )}
                 </div>
 
-                <div className="mb-3">
+                <div role="group" className="mb-3">
                   <label htmlFor="hobbies" className="form-label">
                     Hobbies:
                   </label>
@@ -141,7 +157,7 @@ const Form = ({
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          name={hoby.hobby}
+                          name={hoby.name}
                           id={hoby.id}
                           value={hoby.hobby}
                           onChange={(e) => handleCheckbox(e)}
@@ -185,25 +201,27 @@ const Form = ({
 
                 <div className="mb-3">
                   <label htmlFor="country" className="form-label">
-                    Country:
+                    Country:*
                   </label>
                   <select
                     className="form-select"
                     id="country"
                     name="country"
                     defaultValue={""}
-                    onChange={(e) => handleChange(e)}
+                    onChange={handleChange}
                   >
                     <option value={""}>select</option>
                     {countriesOption}
                   </select>
+                  {errors.country && touched.country && (
+                    <p className="error">{errors.country}</p>
+                  )}
                 </div>
 
                 <button
-                  disabled={isSubmitting}
                   type="submit"
                   className="btn btn-primary w-100"
-                  onClick={() => handleSubmit()}
+                  onClick={() => handleSubmit(values, actions)}
                 >
                   Submit
                 </button>
